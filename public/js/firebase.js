@@ -24,29 +24,47 @@ let login = () => {
     auth.signInWithEmailAndPassword(email.value, password.value);
 }
 
-const user = auth.currentUser;
+let user = auth.currentUser;
+
+/*user.updateProfile({
+    displayName: "Menendez NELSON",
+    photoURL: "https://example.com/user/profile.jpg"
+  }).then(function() {
+    // Update successful.
+    console.log('User Profile Updated Successfully');
+  }).catch(function(error) {
+    // An error happened.
+  });*/
+
 auth.onAuthStateChanged((user) => {
     if(user !== null){
         console.log('This mutherfucker is exist');
         console.log(user.uid);
         console.log(user.email);
         console.log(user.displayName);
+        console.log(user.photoURL);
     }else{
+        signout();
         console.log('No user');
     }
 });
+
 
 //not yet done
 let signup = () => {
     auth
     .createUserWithEmailAndPassword(email.value, password.value)
-    .then((result) => {
-        const user = auth.currentUser;
-        return user.updateProfile({
-          displayName: fullname.value
-        })
+    .then(function () {
+        user = auth.currentUser;
+        user.sendEmailVerification();
       })
-      .catch((error)=>{
+      .then(function () {
+        user.updateProfile({
+          displayName: "Menendez NELSON",
+          photoURL: "PHOTO url"
+        });
+      })
+    .catch((error)=>{
         var errorCode = error.code;
         var errorMessage = error.message;
         console.log(errorCode);
@@ -56,7 +74,11 @@ let signup = () => {
 
 let signout = () => {
     console.log('Au revoir !!!');
-    auth.signOut();
+    auth.signOut().then(function(){
+        console.log('User logged out!');
+    }).catch((error)=>{
+        console.log(error.message);
+    });
 }
 
 /*const database = firebase.database();
