@@ -17,5 +17,6 @@ use App\Http\Controllers\AppController;
 
 Route::get('/', [AppController::class, 'index']);
 
-Route::get('/login', [AuthController::class, 'login']);
-Route::get('/subscribe', [AuthController::class, 'subscribe']);
+Route::get('/signin', [AuthController::class, 'signin']);
+Route::get('/signup', [AuthController::class, 'signup']);
+Route::get('/logout', [AuthController::class, 'logout']);
