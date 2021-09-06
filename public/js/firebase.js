@@ -10,13 +10,80 @@ var firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-const email = document.getElementById('floatingEmail');
+function Verif(){
+  id = document.getElementById('productId').value;
+  libelle = document.getElementById('productDesignation').value;
+  unit = document.getElementById('productUnity').value;
+  qte = document.getElementById('productQuantity').value;
+  categ = document.getElementById('productCategory').value;
+  etage = document.getElementById('productSpace').value;
+  mag = document.getElementById('productStore').value;
+  desc = document.getElementById('productDetails').value;
+  pic = "default.jpg";
+  uid = "unknown";
+}
+
+function Clear(){
+  document.getElementById('productDesignation').value = "";
+  document.getElementById('productUnity').value = "";
+  document.getElementById('productQuantity').value = "";
+  document.getElementById('productCategory').value = "";
+  document.getElementById('productSpace').value = "";
+  document.getElementById('productStore').value = "";
+  document.getElementById('productDetails').value = "";
+}
+
+const addProduct = document.getElementById('addProduction');
+
+//ajout de produit
+if(addProduct){
+  addProduct.addEventListener('click', (e) => {
+    e.preventDefault();
+    Verif();
+    try{
+      firebase.database().ref('product/'+id).set({
+        libelle: libelle,
+        unite: unit,
+        quantite: qte,
+        category: categ,
+        emplacement: etage,
+        magasin: mag,
+        description : desc,
+        picture: pic,
+        user: uid
+      });
+
+      Clear();
+    }catch(err) {
+      document.getElementById("result").innerHTML = err.message;
+    }
+  });
+}
+
+//afficher la liste des produits
+firebase.database().ref('product/'+1630960048).on('value', (snapshot) => {
+  const data = snapshot.val();
+  console.log(data.libelle);
+
+});
+
+const arrayL = document.getElementById('displayArray');
+firebase.database().ref("product").orderByKey().once("value").then((snapshot) => {
+  snapshot.forEach((childSnapshot) => {
+    var key = childSnapshot.key;
+    var childData = childSnapshot.val();              
+
+    console.log(childSnapshot.val().libelle);
+    arrayL.innerHTML = "<tr><td style='width:50px; text-align:center; cursor:pointer; font-weight: bold;'>+</td><td>Produit</td><td style='width:150px; text-align:center; '>Quantité</td><td style='width:150px; text-align:center; '>Détails</td></tr>";
+  });
+});
+/*const email = document.getElementById('floatingEmail');
 const password = document.getElementById('floatingPassword');
 const addBtn = document.getElementById('addBtn');
 const loginBtn = document.getElementById('loginBtn');
 
 const auth = firebase.auth();
-const user = [];
+const user = auth.currentUser;
 
 if (addBtn){
   addBtn.addEventListener('click', (e) => {
@@ -60,16 +127,7 @@ if(loginBtn){
       window.location.replace("/");
     }
   });
-}
-
-auth.onAuthStateChanged((user) => {
-  if(user != null){
-    console.log('This mutherfucker is exist');
-  }else{
-    //auth.signOut();
-    console.log('No user');
-  }
-});
+}*/
 /*const database = firebase.database();
 const rootRef = database.ref('users');
 addBtn.addEventListener('click', (e)=>{
@@ -81,3 +139,4 @@ addBtn.addEventListener('click', (e)=>{
         password : password.value
     });
 });*/
+

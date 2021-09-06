@@ -91,52 +91,84 @@
     <main>
       <h1 class="visually-hidden">Sidebars examples</h1>
 
-      <div class="d-flex flex-column flex-shrink-0 bg-light" style="width: 4.5rem;">
-        <a href="/" class="d-block p-3 link-dark text-decoration-none" title="Icon-only" data-bs-toggle="tooltip" data-bs-placement="right">
-          <svg class="bi" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
-          <span class="visually-hidden">Icon-only</span>
-        </a>
-        <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
-          <li class="nav-item">
-            <a href="#" class="nav-link active py-3 border-bottom" aria-current="page" title="Home" data-bs-toggle="tooltip" data-bs-placement="right">
-              <svg class="bi" width="24" height="24" role="img" aria-label="Home"><use xlink:href="#home"/></svg>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="nav-link py-3 border-bottom" title="Dashboard" data-bs-toggle="tooltip" data-bs-placement="right">
-              <svg class="bi" width="24" height="24" role="img" aria-label="Dashboard"><use xlink:href="#speedometer2"/></svg>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="nav-link py-3 border-bottom" title="Orders" data-bs-toggle="tooltip" data-bs-placement="right">
-              <svg class="bi" width="24" height="24" role="img" aria-label="Orders"><use xlink:href="#table"/></svg>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="nav-link py-3 border-bottom" title="Products" data-bs-toggle="tooltip" data-bs-placement="right">
-              <svg class="bi" width="24" height="24" role="img" aria-label="Products"><use xlink:href="#grid"/></svg>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="nav-link py-3 border-bottom" title="Customers" data-bs-toggle="tooltip" data-bs-placement="right">
-              <svg class="bi" width="24" height="24" role="img" aria-label="Customers"><use xlink:href="#people-circle"/></svg>
-            </a>
-          </li>
-        </ul>
-        <div class="dropdown border-top">
-          <a href="#" class="d-flex align-items-center justify-content-center p-3 link-dark text-decoration-none dropdown-toggle" id="dropdownUser3" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="https://github.com/mdo.png" alt="mdo" width="24" height="24" class="rounded-circle">
-          </a>
-          <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser3">
-            <li><a class="dropdown-item" href="/profile">Profile</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="" onclick="signout()">Sign out</a></li>
-          </ul>
-        </div>
-      </div>
+      @include('inclu.menu')
 
       <div class="b-example-divider"></div>
       <div class="container-fluid" style="overflow-x: scroll;">
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ajouter un nouveau produit</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">  
+                <form class="row g-3 needs-validation" novalidate>
+                  <div class="mb-3">
+                    <input type="hidden" class="form-control" id="productId" value="<?php echo time(); ?>">
+                  </div>
+                  <div class="mb-3">
+                    <input type="text" class="form-control" id="productDesignation" placeholder="Libellé du produit" required>
+                    <div class="valid-feedback">
+                      Looks good!
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <input type="text" class="form-control" id="productUnity" placeholder="Unité du produit">
+                  </div>
+                  <div class="mb-3">
+                    <input type="number" class="form-control" id="productQuantity" placeholder="Quantité du produit">
+                  </div>
+                  <select class="form-select form-select-lg mb-3" id="productCategory" aria-label=".form-select-lg example">
+                    <option selected>Open this select menu</option>
+                    <option value="Antibiotiques">Antibiotiques</option>
+                    <option value="Antiarythmiques">Antiarythmiques</option>
+                    <option value="Antiépileptiques">Antiépileptiques</option>
+                  </select>
+                  <select class="form-select form-select-lg mb-3" id="productSpace" aria-label=".form-select-lg example">
+                    <option selected>Open this select menu</option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                  </select>
+                  <select class="form-select form-select-lg mb-3" id="productStore" aria-label=".form-select-lg example">
+                    <option selected>Open this select menu</option>
+                    <option value="A à Z Pharmacie ">A à Z Pharmacie </option>
+                    <option value="Artha ">Artha o</option>
+                    <option value="B-Mart">B-Mart</option>
+                    <option value="Bella Pharma">Bella Pharma</option>
+                    <option value="Briverati ">Briverati</option>
+                    <option value="Caripharma ">Caripharma</option>
+                  </select>
+                  <div class="mb-3">
+                    <textarea class="form-control" id="productDetails" rows="3"></textarea>
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" id="addProduction">Save changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!---->
+
+      <br/>
+        <div class="row g-3 align-items-center">
+          <div class="col-auto">
+            <label for="inputSearch" class="col-form-label">Recherche</label>
+          </div>
+          <div class="col-auto">
+            <input type="text" id="inputSearch" class="form-control" aria-describedby="searchHelpInline">
+          </div>
+          <div class="col-auto">
+            <span id="searchHelpInline" class="form-text">
+              Saisissez le mot à rechercher.
+            </span>
+          </div>
+        </div>
           <br/>
           <table class="table table-bordered">
             <tr>
@@ -149,13 +181,8 @@
                             <td style="width:150px; text-align:center; ">DETAILS</td>
                         </tr>
                     </table>
-                    <table class="table table-bordered">
-                        <tr>
-                            <td style="width:50px; text-align:center; cursor:pointer; font-weight: bold;">+</td>
-                            <td>Produit</td>
-                            <td style="width:150px; text-align:center; ">Quantité</td>
-                            <td style="width:150px; text-align:center; ">Détails</td>
-                        </tr>
+                    <table class="table table-bordered" id="displayArray">
+                        
                         <tr>
                             <td style="width:50px; text-align:center; cursor:pointer; font-weight: bold;">+</td>
                             <td>Produit</td>
@@ -377,17 +404,9 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{url('js/firebase.js')}}"></script>
-    <script>
-      //const auth = firebase.auth();
-      //const user = auth.currentUser;
-      auth.onAuthStateChanged((user) => {
-        if(user[0] == null){
-          window.location.replace('/signin');
-        }
-      });
-      console.log('verification du user : '+user[0]);
-    </script>
 
     <!-- Bootstrap and sidebar -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>

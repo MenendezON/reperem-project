@@ -8,5 +8,7 @@ class AppController extends Controller{
         return view('index');
     }
 
-    
+    public function showById($id){
+        return view('voir', compact('id'));
+    }
 }
