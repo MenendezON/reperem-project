@@ -120,6 +120,12 @@
                   <div class="mb-3">
                     <input type="number" class="form-control" id="productQuantity" placeholder="Quantité du produit">
                   </div>
+                  <div class="mb-3">
+                    <input type="number" placeholder="0.00" id="productPrice" required name="price" min="0" value="0" step="0.01" title="Currency" pattern="^\d+(?:\.\d{1,2})?$" onblur="this.parentNode.parentNode.style.backgroundColor=/^\d+(?:\.\d{1,2})?$/.test(this.value)?'inherit':'red' ">
+                    <div class="valid-feedback">
+                      Looks good!
+                    </div>
+                  </div>
                   <select class="form-select form-select-lg mb-3" id="productCategory" aria-label=".form-select-lg example">
                     <option selected>Open this select menu</option>
                     <option value="Antibiotiques">Antibiotiques</option>

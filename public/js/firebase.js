@@ -19,6 +19,7 @@ function Verif(){
   etage = document.getElementById('productSpace').value;
   mag = document.getElementById('productStore').value;
   desc = document.getElementById('productDetails').value;
+  prix = document.getElementById('productPrice').value;
   pic = "default.jpg";
   uid = "unknown";
 }
@@ -31,6 +32,7 @@ function Clear(){
   document.getElementById('productSpace').value = "";
   document.getElementById('productStore').value = "";
   document.getElementById('productDetails').value = "";
+  document.getElementById('productPrice').value = "";
 }
 
 const addProduct = document.getElementById('addProduction');
@@ -44,7 +46,7 @@ if(addProduct){
       firebase.database().ref('product/'+id).set({
         libelle: libelle,
         unite: unit,
-        quantite: qte,
+        quantite: parseInt(0),
         category: categ,
         emplacement: etage,
         magasin: mag,
@@ -54,29 +56,112 @@ if(addProduct){
       });
 
       Clear();
+      entryData(qte, prix, id, 'entree');
+      fillAll();
+
     }catch(err) {
       document.getElementById("result").innerHTML = err.message;
     }
   });
 }
 
+// opération d'entrée
+entryData = (qte, prix, id, typeOpe) => {
+  const rootRef = firebase.database().ref('operation/'+id);
+  var currentDate = Date.now();
+  const autoId = rootRef.push().key;
+  rootRef.child(autoId).set({
+    type : typeOpe,
+    qte: parseInt(qte),
+    dte: currentDate,
+    prix: parseFloat(prix)
+  });
+
+  
+  firebase.database().ref('product/'+id+'/quantite').on('value', (snapshot) => {
+    qteCurrent = snapshot.val();
+  });
+  let qteActuelle = parseInt(qteCurrent)+parseInt(qte);
+  firebase.database().ref('product/'+id).update({quantite : parseInt(qteActuelle)});
+}
+
+// opération d'entrée
+outputData = (qte, prix, id) => {
+  const rootRef = firebase.database().ref('product/'+id+'/sortie/');
+  var currentDate = Date.now();
+  const autoId = rootRef.push().key;
+  rootRef.child(autoId).set({
+    qte_entree: parseInt(qte),
+    dte_entree: currentDate,
+    prix_unite: parseFloat(prix)
+  });
+
+  firebase.database().ref('product/'+id+'/quantite').on('value', (snapshot) => {
+    qteCurrent = snapshot.val();
+  });
+  let qteActuelle = parseInt(qteCurrent)-parseInt(qte);
+  firebase.database().ref('product/'+id).update({quantite : parseInt(qteActuelle)});
+}
+
 //afficher la liste des produits
-firebase.database().ref('product/'+1630960048).on('value', (snapshot) => {
+/*firebase.database().ref('product/'+1630960048).on('value', (snapshot) => {
   const data = snapshot.val();
   console.log(data.libelle);
 
-});
+});*/
 
-const arrayL = document.getElementById('displayArray');
-firebase.database().ref("product").orderByKey().once("value").then((snapshot) => {
-  snapshot.forEach((childSnapshot) => {
-    var key = childSnapshot.key;
-    var childData = childSnapshot.val();              
-
-    console.log(childSnapshot.val().libelle);
-    arrayL.innerHTML = "<tr><td style='width:50px; text-align:center; cursor:pointer; font-weight: bold;'>+</td><td>Produit</td><td style='width:150px; text-align:center; '>Quantité</td><td style='width:150px; text-align:center; '>Détails</td></tr>";
+fillAll = () => {
+  const arrayL = document.getElementById('displayArray');
+  arrayL.innerHTML = "";
+  firebase.database().ref("product").orderByKey().once("value").then((snapshot) => {
+    snapshot.forEach((childSnapshot) => {
+      var key = childSnapshot.key;
+      var childData = childSnapshot.val();  
+      console.log("Produit key : "+key+" With value : "+childSnapshot.val().libelle);
+      arrayL.innerHTML += "<tr><td style='width:50px; text-align:center; cursor:pointer; font-weight: bold;'>+</td><td>"+childSnapshot.val().libelle+"</td><td style='width:150px; text-align:center; '>"+childSnapshot.val().quantite+"</td><td style='width:150px; text-align:center; '><a href='/view/"+key+"'>Détails</a></td></tr>";
+    });
   });
-});
+}
+
+/*fillById = (id) => {
+  console.log(id);
+  const arrayL = document.getElementById('displayArray');
+  arrayL.innerHTML = "Hello";
+  firebase.database().ref('product/'+id).on('value', (snapshot) => {
+    var data = snapshot.val();
+    firebase.database().ref('operation/'+id).orderByKey().once("value").then((snapshot) => {
+      snapshot.forEach((childSnapshot) => {
+        var key = childSnapshot.key;
+        var childData = childSnapshot.val();  
+        arrayL.innerHTML += "<tr><td style='width:50px; text-align:center; cursor:pointer; font-weight: bold;'>+</td><td>"+data.libelle+"</td><td style='width:150px; text-align:center; '>"+data.quantite+"</td><td style='width:150px; text-align:center; '>"+childSnapshot.val().type+"</td></tr>";
+      });
+    });
+    
+  });
+}*/
+fillById = (id) => {
+  const arrayL = document.getElementById('displayArray');
+  arrayL.innerHTML = "<tr><th>Libelle</th><th>Type</th><th>Quantité</th><th>Prix</th><th>Date d'op</th></tr>";
+  var libelle;
+  firebase.database().ref('product/'+id).orderByKey().once("value").then((snapshot) => {
+    snapshot.forEach((childSnapshot) => {
+      var key = childSnapshot.key;
+      var childData = childSnapshot.val();
+      console.log(childData); 
+      libelle = childSnapshot.val().libelle;
+      //arrayL.innerHTML += "<tr><td>"+childSnapshot.val().type+"</td><td>"+childSnapshot.val().qte+"</td><td>"+childSnapshot.val().prix+"</td><td>"+childSnapshot.val().dte+"</td></tr>";
+    });
+  });
+  firebase.database().ref('operation/'+id).orderByKey().once("value").then((snapshot) => {
+    snapshot.forEach((childSnapshot) => {
+      var key = childSnapshot.key;
+      var childData = childSnapshot.val();
+      arrayL.innerHTML += "<tr><td>"+libelle+"</td><td>"+childSnapshot.val().type+"</td><td>"+childSnapshot.val().qte+"</td><td>"+childSnapshot.val().prix+"</td><td>"+childSnapshot.val().dte+"</td></tr>";
+    });
+  });
+}
+
+//fillAll();
 /*const email = document.getElementById('floatingEmail');
 const password = document.getElementById('floatingPassword');
 const addBtn = document.getElementById('addBtn');

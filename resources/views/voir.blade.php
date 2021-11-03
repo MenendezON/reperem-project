@@ -99,14 +99,7 @@
 
           <br/>
           <p>Hello{{ $id }}</p>
-          <table class="table table-bordered">
-            <tr>
-                <td>1</td>
-                <td>2</td>
-                <td>3</td>
-                <td>4</td>
-                <td>5</td>
-            <tr>  
+          <table class="table table-bordered" id="displayArray">
           </table>
       </div>
     </main>
@@ -117,14 +110,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
     <script src="{{url('js/firebase.js')}}"></script>
     <script>
-      //const auth = firebase.auth();
-      //const user = auth.currentUser;
-      auth.onAuthStateChanged((user) => {
-        if(user[0] == null){
-          window.location.replace('/signin');
-        }
-      });
-      console.log('verification du user : '+user[0]);
+      fillById({{ $id }});
     </script>
 
     <!-- Bootstrap and sidebar -->
